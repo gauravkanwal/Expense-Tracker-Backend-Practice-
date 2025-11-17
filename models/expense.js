@@ -7,7 +7,7 @@ const expenseSchema=mongoose.Schema({
     },
 
     title:String,
-    ammount:Number,
+    amount:Number,
     category:String,
     paymentType:String,
     date:{

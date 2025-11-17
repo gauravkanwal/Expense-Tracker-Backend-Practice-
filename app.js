@@ -49,6 +49,10 @@ try {
 }    
 });
 
+app.get('/login',(req,res)=>{
+    res.send("Please login!");
+})
+
 app.post('/login',async(req,res)=>{
 try {
         const{email,password}=req.body;
@@ -91,6 +95,35 @@ app.get('/logout',(req,res)=>{
     }
 });
 
+app.post('/expenses',isLoggedIn,async(req,res)=>{
+    try {
+        const {title,amount,category,paymentType}=req.body;
+        const user=req.user;
+    
+        const newExpense=await expenseModel.create({
+            userID:user.id,
+            title,
+            amount,
+            category,
+            paymentType
+        });
+    res.status(200).send("Expense added succesfully!");
+        
+    } catch (error) {
+    res.status(500).send("Something went wrong while adding expense. "+error);
+    }
+});
 
+app.get('/expenses',isLoggedIn,async(req,res)=>{
+    try {
+        const user=req.user;
+        const expenses=await expenseModel.find({userID:user.id});
+        console.log(expenses);
+        res.json(expenses);
+        
+    } catch (error) {
+            res.status(500).send("Something went wrong while loadong expenses. "+error.message);
+    }
+});
 
 app.listen(process.env.PORT);
