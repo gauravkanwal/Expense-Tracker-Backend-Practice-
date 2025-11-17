@@ -14,8 +14,6 @@ const expenseSchema=mongoose.Schema({
         type:Date,
         default:Date.now
     },
-    createdAt,
-    updatedAt
 })
 
 module.exports=mongoose.model('expense',expenseSchema);
