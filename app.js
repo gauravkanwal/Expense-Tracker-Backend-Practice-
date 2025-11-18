@@ -126,4 +126,41 @@ app.get('/expenses',isLoggedIn,async(req,res)=>{
     }
 });
 
+app.post('/edit-expense/:expenseId',isLoggedIn,async(req,res)=>{
+    try {
+        const user=req.user;
+        const updatedExpense= await expenseModel.findOneAndUpdate(
+            {_id:req.params.expenseId,userID:user.id},
+            {$set: req.body},
+            {new:true}
+        );
+    
+        if(!updatedExpense){
+            return res.status(400).send("Expense not found");
+        }
+    
+        res.redirect("/expenses");
+    } catch (error) {
+        res.status(500).send("Something went wrong while updating expesne: "+error);
+}
+});
+
+app.post('/delete-expense/:expenseID',isLoggedIn,async (req,res)=>{
+    try {
+        const deleted= await expenseModel.findOneAndDelete({
+            _id:req.params.expenseID,
+            userID:req.user.id
+        });
+    
+        if(!deleted){
+            return res.status(400).send("No expense found");
+        }
+    
+        res.redirect('/expenses');
+    } catch (error) {
+        res.status(500).send("Some thing went wrong while deleting: "+error);
+    }
+});
+
+
 app.listen(process.env.PORT);
